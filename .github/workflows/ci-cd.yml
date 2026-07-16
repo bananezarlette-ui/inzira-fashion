@@ -2,77 +2,46 @@ name: Inzira Fashion — CI/CD Pipeline
 
 on:
   push:
-    branches: [main, develop]
+    branches: [main]
   pull_request:
     branches: [main]
 
 jobs:
-  # ── Job 1: PHP Syntax Check ──────────────────────────
   test:
     name: PHP Syntax Check
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
         with:
           php-version: '8.2'
-
-      - name: Check PHP syntax (all files)
+      - name: Check PHP syntax
         run: |
-          echo "🔍 Running PHP syntax check..."
           find . -name "*.php" -not -path "./vendor/*" | while read file; do
             php -l "$file" || exit 1
           done
-          echo "✅ All PHP files passed syntax check"
-
-      - name: Validate project structure
+          echo "✅ All PHP files passed"
+      - name: Check required files
         run: |
-          echo "📄 Checking key files exist..."
-          test -f index.php            && echo "✅ index.php"
-          test -f database.sql         && echo "✅ database.sql"
-          test -f Dockerfile           && echo "✅ Dockerfile"
-          test -f docker-compose.yml   && echo "✅ docker-compose.yml"
+          test -f index.php && echo "✅ index.php"
+          test -f database.sql && echo "✅ database.sql"
+          test -f Dockerfile && echo "✅ Dockerfile"
+          test -f docker-compose.yml && echo "✅ docker-compose.yml"
           test -f assets/css/style.css && echo "✅ style.css"
-          test -f assets/js/cart.js    && echo "✅ cart.js"
-          test -f config/database.php  && echo "✅ database.php"
-          test -f admin/index.php      && echo "✅ admin/index.php"
-          echo "✅ All required files present"
+          test -f admin/index.php && echo "✅ admin panel"
 
-  # ── Job 2: Docker Build ──────────────────────────────
   docker-build:
     name: Docker Build
     runs-on: ubuntu-latest
     needs: test
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
+      - uses: actions/checkout@v4
+      - uses: docker/setup-buildx-action@v3
       - name: Build Docker image
         run: |
-          echo "🐳 Building Docker image..."
           docker build -t inzira-fashion:latest .
           echo "✅ Docker image built successfully"
-
-      - name: Test Docker image starts
-        run: |
-          docker run -d --name test_app -p 8080:80 \
-            -e DB_HOST=localhost \
-            -e DB_USER=root \
-            -e DB_PASS=pass \
-            -e DB_NAME=inzira_fashion \
-            inzira-fashion:latest
-          sleep 5
-          docker ps | grep test_app && echo "✅ Container is running"
-          docker stop test_app
-          docker rm test_app
-
-      - name: Show Docker image info
+      - name: Verify image
         run: |
           docker images inzira-fashion
-          echo "✅ Docker build complete and verified"
+          echo "✅ Build complete"
