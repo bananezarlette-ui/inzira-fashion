@@ -1,0 +1,19 @@
+.admin-body { background: #f3f4f6; }
+.admin-layout { display: flex; min-height: 100vh; }
+.admin-sidebar { width: 240px; background: #111827; flex-shrink: 0; position: sticky; top: 0; height: 100vh; overflow-y: auto; }
+.sidebar-logo { padding: 1.5rem; font-size: 1.3rem; border-bottom: 1px solid #1f2937; }
+.sidebar-nav { padding: 1rem 0; }
+.sidebar-nav a { display: flex; align-items: center; gap: .75rem; padding: .75rem 1.5rem; color: #9ca3af; font-size: .9rem; font-weight: 500; transition: .2s; }
+.sidebar-nav a:hover, .sidebar-nav a.active { background: #1f2937; color: #fff; }
+.admin-main { flex: 1; overflow-x: hidden; }
+.admin-topbar { background: #fff; padding: 1.25rem 2rem; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 1px 4px rgba(0,0,0,.08); }
+.admin-topbar h1 { font-size: 1.3rem; font-weight: 700; }
+.stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px,1fr)); gap: 1.25rem; padding: 1.5rem 2rem; }
+.stat-card { background: #fff; border-radius: 12px; padding: 1.5rem; display: flex; align-items: center; gap: 1rem; box-shadow: 0 2px 8px rgba(0,0,0,.06); }
+.stat-icon { font-size: 2.5rem; }
+.stat-value { font-size: 1.5rem; font-weight: 800; color: var(--brand); }
+.stat-label { font-size: .85rem; color: var(--text-muted); font-weight: 500; }
+.admin-card { background: #fff; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,.06); margin: 0 2rem 1.5rem; padding: 1.5rem; }
+.admin-card-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 1.25rem; }
+.admin-form { max-width: 700px; }
+@media (max-width: 768px) { .admin-sidebar { display: none; } .stats-grid { padding: 1rem; } .admin-card { margin: 0 1rem 1rem; } }

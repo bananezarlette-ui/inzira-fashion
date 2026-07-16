@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  db:
+    image: mysql:8.0
+    container_name: inzira_db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpass
+      MYSQL_DATABASE: inzira_fashion
+      MYSQL_USER: inzira
+      MYSQL_PASSWORD: inzirapass
+    ports:
+      - "3306:3306"
+    volumes:
+      - dbdata:/var/lib/mysql
+      - ./database.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "inzira", "-pinzirapass"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  app:
+    build: .
+    container_name: inzira_app
+    restart: always
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DB_HOST: db
+      DB_USER: inzira
+      DB_PASS: inzirapass
+      DB_NAME: inzira_fashion
+    ports:
+      - "8080:80"
+    volumes:
+      - .:/var/www/html
+
+volumes:
+  dbdata:
